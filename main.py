@@ -109,3 +109,12 @@ def read_sitter_profile(id: int, db: Session = Depends(get_db),
     if results is None:
         raise HTTPException(status_code=404, detail="sittterprofile not found")
     return results
+
+# delete sitterprofile
+
+
+@app.delete("/sitterprofiles/{id}", response_model=schemas.SitterProfileBase)
+def delete_sitter_profiles(id: int,
+                           user: UserBase = Depends(get_current_user),
+                           db: Session = Depends(get_db)):
+    return sitterprofiles.delete_sitter_profile(db, user_id=user.id, sitter_profile_id=id)

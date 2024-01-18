@@ -33,9 +33,11 @@ def get_sitter_profile(db: Session, user_id: int, sitter_profile_id: int):
 # delete sitterprofile
 
 
-def delete_sitter_profile(db: Session, sitter_profile_id: int):
+def delete_sitter_profile(db: Session, user_id: int, sitter_profile_id: int):
     sitter_proffile = db.query(models.SitterProfile).filter(
-        models.SitterProfile.id == sitter_profile_id).first()
+        models.SitterProfile.id == sitter_profile_id).filter(models.SitterProfile.user_id == user_id).first()
+    if list is None:
+        raise HTTPException(status_code=404, detail="sitterProfile not found")
     db.delete(sitter_proffile)
     db.commit()
     return sitter_proffile

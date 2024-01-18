@@ -30,4 +30,38 @@ $ pipenv run uvicorn main:app --reload
 
 # APIMain
  ->set up the basic API code in main
+# Git Tips
+ # make sure you're on an up to date main
+ $ git checkout main
+ $ git pull origin main
 
+ # then create a new branch
+  $ git checkout -b feat/bookings
+  Making commits:
+
+# Making commits:
+ -> Go over your changes and only stage what you need
+$ git add -p
+
+ -> Then, see what untracked files you may need to add
+ $ git status
+
+ -> Stage new files
+ $ git add app/bookings.py
+
+ -> Now commit
+ $ git commit -m "feat(Bookings): Add CRUD for bookings"
+
+ # Merging branches
+
+ -> First, make sure everything is commited
+ -> Check out main first (if you are merging TO main)
+ $ git checkout main
+
+ -> Then merge in your (feature) branch
+  $ git merge feat/bookings
+
+ ->Push it
+ $ git push origin main
+
+ -> Now you can create a new branch for the next feature!
