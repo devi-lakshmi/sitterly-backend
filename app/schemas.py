@@ -1,4 +1,6 @@
 from pydantic import BaseModel, model_validator
+import datetime
+from typing import Union
 
 # Note how this base model does not expose the password.
 
@@ -60,3 +62,25 @@ class Token(BaseModel):
 class TokenPayload(BaseModel):
     exp: int
     sub: str
+
+
+class SitterProfileBase(BaseModel):
+    id: int
+    name: str
+    city: str
+    hourly_rate_euro: int
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+
+
+class SitterProfileCreate(BaseModel):
+    name: str
+    city: str
+    hourly_rate_euro: int
+
+
+class SitterProfile(SitterProfileBase):
+    user_id: int
+
+    class Config:
+        from_attributes = True
