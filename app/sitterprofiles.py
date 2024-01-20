@@ -36,7 +36,7 @@ def get_sitter_profile(db: Session, user_id: int, sitter_profile_id: int):
 def delete_sitter_profile(db: Session, user_id: int, sitter_profile_id: int):
     sitter_proffile = db.query(models.SitterProfile).filter(
         models.SitterProfile.id == sitter_profile_id).filter(models.SitterProfile.user_id == user_id).first()
-    if list is None:
+    if sitter_proffile is None:
         raise HTTPException(status_code=404, detail="sitterProfile not found")
     db.delete(sitter_proffile)
     db.commit()
@@ -49,3 +49,16 @@ def get_sitter_profile_by_name(db: Session, name: str):
         models.SitterProfile.name == name).first()
     print(sitter_profile)
     return sitter_profile
+# update one sitterprofile
+
+
+def update_sitter_profile(db: Session, user_id: int, sitter_profile_id: int, city: str, hourly_rate_euro: int):
+    updated_sitter_profile = db.query(models.SitterProfile).filter(
+        models.SitterProfile.id == sitter_profile_id).filter(models.SitterProfile.user_id == user_id).first()
+
+    updated_sitter_profile.city = city
+    updated_sitter_profile.hourly_rate_euro = hourly_rate_euro
+    if updated_sitter_profile is None:
+        raise HTTPException(status_code=404, detail="sitterprofile not found")
+    db.commit()
+    return updated_sitter_profile
