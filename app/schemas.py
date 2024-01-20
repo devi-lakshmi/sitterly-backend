@@ -66,17 +66,24 @@ class TokenPayload(BaseModel):
 
 class SitterProfileBase(BaseModel):
     id: int
-    name: str
+    first_name: str
+    last_name: str
     city: str
-    hourly_rate_euro: int
+    hourly_rate_euro: float
     created_at: datetime.datetime
     updated_at: datetime.datetime
 
 
 class SitterProfileCreate(BaseModel):
-    name: str
+    first_name: str
+    last_name: str
     city: str
-    hourly_rate_euro: int
+    hourly_rate_euro: float
+
+
+class SitterprofileUpdate(BaseModel):
+    city: str
+    hourly_rate_euro: float
 
 
 class SitterProfile(SitterProfileBase):

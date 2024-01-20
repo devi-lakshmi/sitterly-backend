@@ -45,7 +45,6 @@ def sign_up_user(user: UserCreate, db: Session = Depends(get_db)):
         user = create_user(db, user=user)
     except ValidationError as e:
         raise HTTPException(status_code=422, detail=str(e.msg))
-
     return user
 
 
@@ -122,11 +121,11 @@ def delete_sitter_profiles(id: int,
 
 
 @app.put("/updateSitterProfile/{id}", response_model=schemas.SitterProfileBase)
-def update_sitter_profile(id: int, city: str, hourly_rate_euro: int,
+def update_sitter_profile(id: int, sitter_proffile: schemas.SitterprofileUpdate,
                           user: UserBase = Depends(get_current_user),
                           db: Session = Depends(get_db)):
     results = sitterprofiles.update_sitter_profile(
-        db, user_id=user.id, sitter_profile_id=id, city=city, hourly_rate_euro=hourly_rate_euro)
+        db, user_id=user.id, sitter_profile_id=id, sitter_proffile=sitter_proffile)
     if results is None:
         raise HTTPException(
             status_code=404, detail="sStterProfile not found")
