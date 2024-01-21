@@ -36,14 +36,14 @@ class SitterProfile(Base):
 
 
 class Booking(Base):
-    __tablename__ = "Bookings"
+    __tablename__ = "bookings"
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
 
     starts_at = Column(DateTime, default=datetime.datetime.utcnow)
     ends_at = Column(DateTime, default=datetime.datetime.utcnow)
-    is_canceled = Column(Boolean)
-    description = Column(String)
+    is_canceled = Column(Boolean, default=False)
+    description = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)

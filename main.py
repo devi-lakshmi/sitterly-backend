@@ -5,8 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
-
-from app import database, schemas, sitterprofiles, models
+from app import database, schemas, sitterprofiles, bookings
 from app.users import create_user, process_login
 from app.deps import get_current_user
 from app.schemas import UserBase, UserCreate, UserCredentials, Token
@@ -130,3 +129,31 @@ def update_sitter_profile(id: int, sitter_proffile: schemas.SitterprofileUpdate,
         raise HTTPException(
             status_code=404, detail="sStterProfile not found")
     return results
+# Booking API
+
+# create bookings
+
+
+@app.post("/createBookings", response_model=schemas.BookingCreate)
+def create_booking(booking: schemas.BookingCreate,
+                   user: UserBase = Depends(
+        get_current_user),   # get user from token
+    db: Session = Depends(get_db)
+):
+
+    # create the list and pass in the user_id
+    return bookings.create_booking(db, user_id=user.id, sitter_proffile_id=booking.sitter_profile_id, booking=booking)
+
+
+@app.get("/bookings")
+def browse_bookings(user: UserBase = Depends(
+        get_current_user), db: Session = Depends(get_db)
+):
+    return bookings.browse_bookings(db, user_id=user.id)
+
+
+@app.put("/cancelMyBooking/{id}")
+def cancel_booking(bookingId: int, user: UserBase = Depends(
+        get_current_user), db: Session = Depends(get_db)
+):
+    return bookings.cancel_booking(db, user_id=user.id, bookingId=bookingId)
