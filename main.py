@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
-from app import database, schemas, sitterprofiles, bookings
+from app import database, schemas, sitterprofiles, bookings, reviews
 from app.users import create_user, process_login
 from app.deps import get_current_user
 from app.schemas import UserBase, UserCreate, UserCredentials, Token
@@ -153,6 +153,21 @@ def browse_bookings(user: UserBase = Depends(
 
 
 @app.put("/cancelMyBooking/{id}")
+def cancel_booking(bookingId: int, user: UserBase = Depends(
+        get_current_user), db: Session = Depends(get_db)
+):
+    return bookings.cancel_booking(db, user_id=user.id, bookingId=bookingId)
+
+
+@app.post("/reviewSitter")
+def review_sitter(sitterReview: schemas.SitterReviewCreate, user: UserBase = Depends(
+        get_current_user), db: Session = Depends(get_db)
+):
+
+    return reviews.review_sitter(db, sitterReview=sitterReview, user_id=user.id)
+
+
+@app.post("/reviewParent/")
 def cancel_booking(bookingId: int, user: UserBase = Depends(
         get_current_user), db: Session = Depends(get_db)
 ):

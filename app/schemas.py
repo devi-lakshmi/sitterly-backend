@@ -122,3 +122,21 @@ class Booking(BookingBase):
 
     class Config:
         orm_mode = True
+
+
+class Review(BaseModel):
+    score: int
+    message: str
+    for_role: str
+    created_at: datetime
+    updated_at: datetime
+
+
+class SitterReviewCreate(Review):
+    reviewee_id: int
+    booking_id: int
+
+
+class ParentReviewCreate(Review):
+    reviewee_id: int
+    booking_id: int
