@@ -19,8 +19,8 @@ class User(Base):
     bookings = relationship("Booking", back_populates="user")
     given_reviews = relationship(
         "Review", foreign_keys="[Review.reviewer_id]", back_populates="reviewer")
-    # received_reviews = relationship(
-    #     "Review", foreign_keys="[Review.reviewee_id]", back_populates=" reviewee")
+    received_reviews = relationship(
+        "Review", foreign_keys="[Review.reviewee_id]", back_populates=" reviewee")
 
 
 class SitterProfile(Base):
@@ -39,8 +39,8 @@ class SitterProfile(Base):
  # Relationship with Booking( one to one)
 
     bookings = relationship("Booking", back_populates="sitter_profile")
-    # received_reviews = relationship(
-    #     "Review", foreign_keys="[Review.reviewee_id]", back_populates="sitter_profile")
+    received_reviews = relationship(
+        "Review", foreign_keys="[Review.reviewee_id]", back_populates="sitter_profile")
 
 
 class Booking(Base):
@@ -77,8 +77,8 @@ class Review(Base):
     reviewee_id = Column(Integer, ForeignKey("users.id"))
     reviewee = relationship(
         "User", foreign_keys="[Review.reviewee_id]", back_populates="received_reviews")
-    # sitter_profile = relationship(
-    #     "SitterProfile", foreign_keys="[Review.reviewee_id]", back_populates="received_reviews")
+    sitter_profile = relationship(
+        "SitterProfile", foreign_keys="[Review.reviewee_id]", back_populates="received_reviews")
     booking_id = Column(Integer, ForeignKey("bookings.id"))
     booking = relationship("Booking", back_populates="review")
 
