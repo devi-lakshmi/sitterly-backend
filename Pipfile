@@ -6,14 +6,14 @@ name = "pypi"
 [packages]
 python-jose = {extras = ["cryptography"], version = "*"}
 passlib = {extras = ["bcrypt"], version = "*"}
-fastapi = {extras = ["all"], version = "*"}
-uvicorn = {extras = ["standard"], version = "*"}
+fastapi = "*"
 psycopg2-binary = "*"
 alembic = "*"
 sqlalchemy = "*"
 pydantic = "*"
 python-dotenv = "*"
 python-multipart = "*"
+uvicorn = {extras = ["standard"], version = "*"}
 
 [dev-packages]
 

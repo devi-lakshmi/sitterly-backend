@@ -35,6 +35,7 @@ JWT_SECRET_KEY=271d3260a43e49d2be57499a530c55e0029618f33d2342862a7cb636624e9db3
 Now, run the migrations
 
 ```bash
+$ pipenv run alembic revision --autogenerate -m "First revision"
 $ pipenv run alembic upgrade head
 ```
 

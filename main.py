@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
@@ -5,7 +6,7 @@ from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 
-from app import database
+from app import database, schemas, sitterprofiles, models
 from app.users import create_user, process_login
 from app.deps import get_current_user
 from app.schemas import UserBase, UserCreate, UserCredentials, Token
@@ -71,3 +72,62 @@ def get_user_profile(user: UserBase = Depends(get_current_user)):
     return user
 
 # Implement your own endpoints below
+
+# get all sitterprofiles
+
+
+@app.get("/getSitterProfiles", response_model=list[schemas.SitterProfile])
+def read_sitter_profile(
+        skip: int = 0, limit: int = 20,
+        user: UserBase = Depends(get_current_user),
+        db: Session = Depends(get_db)):
+    results = sitterprofiles.get_sitter_profiles(
+        db, user_id=user.id, skip=skip, limit=limit)
+    if results is None:
+        raise HTTPException(status_code=404, detail="No sitterprofiles found")
+    return results
+
+# create sitterprofile
+
+
+@app.post("/createSitterProfile", response_model=schemas.SitterProfile)
+def create_sitter_profile(
+    sitter_proffile: schemas.SitterProfileCreate,
+    user: UserBase = Depends(get_current_user),   # get user from token
+    db: Session = Depends(get_db)
+):
+    # create the list and pass in the user_id
+    return sitterprofiles.create_sitter_profile(db, user_id=user.id, sitter_profile=sitter_proffile)
+
+
+@app.get("/getSitterProfileById/{id}", response_model=schemas.SitterProfileBase)
+def read_sitter_profile(id: int, db: Session = Depends(get_db),
+                        user: UserBase = Depends(get_current_user)
+                        ):
+    results = sitterprofiles.get_sitter_profile(
+        db, user_id=user.id, sitter_profile_id=id)
+    if results is None:
+        raise HTTPException(status_code=404, detail="SittterProfile not found")
+    return results
+
+# delete sitterprofile
+
+
+@app.delete("/deleteSitterProfileById/{id}", response_model=schemas.SitterProfileBase)
+def delete_sitter_profiles(id: int,
+                           user: UserBase = Depends(get_current_user),
+                           db: Session = Depends(get_db)):
+    return sitterprofiles.delete_sitter_profile(db, user_id=user.id, sitter_profile_id=id)
+# update sitterprofile
+
+
+@app.put("/updateSitterProfile/{id}", response_model=schemas.SitterProfileBase)
+def update_sitter_profile(id: int, city: str, hourly_rate_euro: int,
+                          user: UserBase = Depends(get_current_user),
+                          db: Session = Depends(get_db)):
+    results = sitterprofiles.update_sitter_profile(
+        db, user_id=user.id, sitter_profile_id=id, city=city, hourly_rate_euro=hourly_rate_euro)
+    if results is None:
+        raise HTTPException(
+            status_code=404, detail="sStterProfile not found")
+    return results
