@@ -11,6 +11,7 @@ class User(Base):
     email = Column(String, nullable=False, unique=True, index=True)
     password = Column(String, nullable=False)
     disabled = Column(Boolean, default=False)
+    role = Column(String, nullable=False)
     # Relationship with SitterProfile (one-to-one)
     sitter_profile = relationship("SitterProfile", back_populates="user")
     # Relationship with  Booking( one -to one)

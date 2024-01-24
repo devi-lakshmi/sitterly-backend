@@ -28,18 +28,15 @@ def browse_bookings(db: Session, user_id: int):
 def cancel_booking(db: Session, user_id: int, bookingId: int):
     booking = db.query(models.Booking).filter(
         models.Booking.id == bookingId).first()
+    print(booking.is_canceled)
     if not booking:
         raise HTTPException(status_code=404, detail="Booking not found")
     if booking.user_id != user_id:
         raise HTTPException(
             status_code=403, detail="You are not allowed to cancel")
-    if booking.starts_at >= datetime.datetime.utcnow():
-        raise HTTPException(
-            status_code=422, detail="Cannot cancel past bookings")
     if booking.is_canceled:
         raise HTTPException(
             status_code=422, detail="Booking already cancelled")
-
     booking.is_canceled = True
     db.commit()
     db.refresh(booking)

@@ -9,6 +9,7 @@ from typing import List
 class UserBase(BaseModel):
     id: int
     email: str
+    role: str
 
 # We allow users to sign up with email and password
 
@@ -16,6 +17,7 @@ class UserBase(BaseModel):
 class UserCreate(BaseModel):
     email: str
     password: str
+    role: str
 
     @model_validator(mode='after')
     def check_email(self) -> 'UserCreate':
@@ -40,6 +42,13 @@ class UserCreate(BaseModel):
         if password is not None and len(password) < 4:
             raise ValueError('password must be at least 4 characters long')
 
+        return self
+
+    @model_validator(mode='after')
+    def check_role(self) -> 'UserCreate':
+        role = self.role
+        if role is None:
+            raise ValueError('role is required')
         return self
 
 

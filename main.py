@@ -76,11 +76,11 @@ def get_user_profile(user: UserBase = Depends(get_current_user)):
 
 @app.get("/getSitterProfiles", response_model=list[schemas.SitterProfile])
 def read_sitter_profile(
-        skip: int = 0, limit: int = 20,
+        page: int,
         user: UserBase = Depends(get_current_user),
         db: Session = Depends(get_db)):
     results = sitterprofiles.get_sitter_profiles(
-        db, user_id=user.id, skip=skip, limit=limit)
+        db, user_id=user.id, page=page)
     if results is None:
         raise HTTPException(status_code=404, detail="No sitterprofiles found")
     return results
@@ -153,7 +153,9 @@ def browse_bookings(user: UserBase = Depends(
 
 
 @app.put("/cancelMyBooking/{id}")
-def cancel_booking(bookingId: int, user: UserBase = Depends(
+def cancel_booking(id: int, user: UserBase = Depends(
         get_current_user), db: Session = Depends(get_db)
 ):
-    return bookings.cancel_booking(db, user_id=user.id, bookingId=bookingId)
+    print("cancelbooking")
+    print(id)
+    return bookings.cancel_booking(db, user_id=user.id, bookingId=id)
