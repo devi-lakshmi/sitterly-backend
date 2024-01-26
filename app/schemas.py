@@ -88,7 +88,6 @@ class SitterProfileCreate(BaseModel):
 
 class SitterprofileUpdate(BaseModel):
     city: str
-    hourly_rate_euro: float
 
 
 class SitterProfile(SitterProfileBase):
@@ -114,14 +113,13 @@ class User(UserBase):
     bookings: List[BookingBase] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class BookingCreate(BaseModel):
     starts_at: datetime
     ends_at: datetime
     is_canceled: bool = False
-    description: str
     sitter_profile_id: int
 
 
@@ -130,4 +128,24 @@ class Booking(BookingBase):
     sitter_profile: SitterProfileCreate
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+
+class ReviewBase(BaseModel):
+    id: int
+    score: int
+    message: str
+    for_role: str
+    created_at: datetime
+    updated_at: datetime
+
+
+class SitterReviewCreate(BaseModel):
+    score: int
+    message: str
+    booking_id: int
+
+
+class ParentReviewCreate(BaseModel):
+    reviewee_id: int
+    booking_id: int

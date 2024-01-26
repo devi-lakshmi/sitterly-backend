@@ -1,27 +1,22 @@
-# from fastapi import HTTPException
-# from sqlalchemy.orm import Session
-# from . import models, schemas
+from fastapi import HTTPException
+from sqlalchemy.orm import Session
+from . import models, schemas
 
 
-# def review_sitter(db: Session, reviewer_id: int, user_id:int,sitterReview: schemas.SitterReviewCreate):
-#     booking = db.query(models.Review).filter(
-#         models.Review.booking_id == sitterReview.booking_id).first()
-#     if not booking:
-#         raise HTTPException(status_code=404, detail="Booking not found")
-#     db_review = models.Review(
-#         **sitterReview.dict(), id=sitterReview.booking_id)
-#     db_review.reviewer_id = reviewer_id
-#     db.add(db_review)
-#     db.commit()
-#     db.refresh(booking)
-    # return {"message": "Booking cancelled successfully"}
-
-
-# def create_booking(db: Session, user_id: int, sitter_proffile_id: int, booking: schemas.BookingCreate):
-#     db_booking = models.Booking(
-#         **booking.dict(), user_id=user_id)
-#     db_booking.sitter_profile_id = sitter_proffile_id
-#     db.add(db_booking)
-#     db.commit()
-#     db.refresh(db_booking)
-#     return db_booking
+def review_sitter(db: Session, sitterReview: schemas.SitterReviewCreate, user_id: int):
+    db_booking = db.query(models.Booking).filter(
+        models.Booking.id == sitterReview.booking_id).first()
+    if not db_booking:
+        raise HTTPException(status_code=422, detail="Booking not found")
+    db_review = models.Review(
+        **sitterReview.dict())
+    db_sitterProfile = db.query(models.SitterProfile).filter(
+        models.SitterProfile.id == db_booking.sitter_profile_id).first()
+    db_review.reviewer_id = user_id
+    db_review.reviewee_id = db_sitterProfile.user_id
+    db_review.sitter_profile_id = db_booking.sitter_profile_id
+    db_review.for_role = "Parent"
+    db.add(db_review)
+    db.commit()
+    db.refresh(db_review)
+    return {"message": "Review created successfully"}

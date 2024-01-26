@@ -1,3 +1,4 @@
+from traceback import print_stack
 from typing import List
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -5,7 +6,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
-from app import database, schemas, sitterprofiles, bookings
+from app import database, schemas, sitterprofiles, bookings, reviews
 from app.users import create_user, process_login
 from app.deps import get_current_user
 from app.schemas import UserBase, UserCreate, UserCredentials, Token
@@ -85,6 +86,21 @@ def read_sitter_profile(
         raise HTTPException(status_code=404, detail="No sitterprofiles found")
     return results
 
+# get sitterprofile by city
+
+
+@app.get("/getSitterProfileByCity", response_model=list[schemas.SitterProfile])
+def read_sitter_profile(
+        city: str,
+        user: UserBase = Depends(get_current_user),
+        db: Session = Depends(get_db)):
+    results = sitterprofiles.get_sitter_profile_by_city(
+        db, city=city)
+    if results is None:
+        raise HTTPException(status_code=404, detail="No sitterprofiles found")
+    return results
+
+
 # create sitterprofile
 
 
@@ -127,7 +143,7 @@ def update_sitter_profile(id: int, sitter_proffile: schemas.SitterprofileUpdate,
         db, user_id=user.id, sitter_profile_id=id, sitter_proffile=sitter_proffile)
     if results is None:
         raise HTTPException(
-            status_code=404, detail="sStterProfile not found")
+            status_code=404, detail="SitterProfile not found")
     return results
 # Booking API
 
@@ -140,9 +156,10 @@ def create_booking(booking: schemas.BookingCreate,
         get_current_user),   # get user from token
     db: Session = Depends(get_db)
 ):
+    print("booking", booking)
 
     # create the list and pass in the user_id
-    return bookings.create_booking(db, user_id=user.id, sitter_proffile_id=booking.sitter_profile_id, booking=booking)
+    return bookings.create_booking(db, user_id=user.id, sitter_profile_id=booking.sitter_profile_id, booking=booking)
 
 
 @app.get("/bookings")
@@ -154,8 +171,23 @@ def browse_bookings(user: UserBase = Depends(
 
 @app.put("/cancelMyBooking/{id}")
 def cancel_booking(id: int, user: UserBase = Depends(
+
         get_current_user), db: Session = Depends(get_db)
 ):
-    print("cancelbooking")
-    print(id)
     return bookings.cancel_booking(db, user_id=user.id, bookingId=id)
+
+
+@app.post("/reviews")
+def review_sitter(sitterReview: schemas.SitterReviewCreate,  user: UserBase = Depends(
+        get_current_user), db: Session = Depends(get_db)
+
+):
+    return reviews.review_sitter(db, sitterReview=sitterReview, user_id=user.id)
+
+
+# @app.post("/reviewParent")
+# def cancel_booking(bookingId: int, user: UserBase = Depends(
+#         get_current_user), db: Session = Depends(get_db)
+# ):
+#     return bookings.cancel_booking(db, user_id=user.id, bookingId=bookingId)
+
