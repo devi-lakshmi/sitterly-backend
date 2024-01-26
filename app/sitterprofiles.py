@@ -1,13 +1,15 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, Query
 from sqlalchemy.orm import Session
 from . import models, schemas
 
 # get sitterprofiles
 
 
-def get_sitter_profiles(db: Session, user_id: int, skip: int = 0, limit: int = 20):
-    sitter_profiles = db.query(models.SitterProfile).filter(user_id == user_id).offset(
-        skip).limit(limit).all()
+def get_sitter_profiles(db: Session, user_id: int, page: int = Query(1, gt=0)):
+    start_idx = (page - 1) * 10
+    end_idx = start_idx + 10
+    sitter_profiles = db.query(models.SitterProfile).offset(
+        start_idx).limit(end_idx).all()
     print(sitter_profiles)
     return sitter_profiles
 
