@@ -26,7 +26,7 @@ Create your `.env` file
 # .env
 DATABASE_URL=postgresql://postgres:secret@localhost:5446/postgres
 # Generate a new secret with `openssl rand -hex 32`
-JWT_SECRET_KEY=271d3260a43e49d2be57499a530c55e0029618f33d2342862a7cb636624e9db3
+JWT_SECRET_KEY=<SECRET_KEY>
 ```
 
 Now, run the migrations
