@@ -3,6 +3,10 @@ from datetime import datetime
 from typing import Union
 from typing import List
 
+
+class Healthz(BaseModel):
+    status: str
+
 # Note how this base model does not expose the password.
 
 

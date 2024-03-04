@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: sitterly-backend
+    runtime: python
+    repo: https://github.com/devi-lakshmi/sitterly-backend.git
+    region: frankfurt
+    plan: free
+    branch: main
+    buildCommand: pipenv install
+    startCommand: ./bin/start.sh
+    healthCheckPath: /healthz
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sitterly-backend-db
+          property: connectionString
+
+databases:
+  - name: sitterly-backend-db
+    region: frankfurt
+    plan: free
+    databaseName: app
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere

@@ -20,3 +20,9 @@ def review_sitter(db: Session, sitterReview: schemas.SitterReviewCreate, user_id
     db.commit()
     db.refresh(db_review)
     return {"message": "Review created successfully"}
+
+
+def browse_reviews(db: Session, user_id: int):
+    reviews = db.query(models.Review).filter(
+        models.Review.reviewer_id == user_id).all()
+    return reviews

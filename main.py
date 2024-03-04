@@ -37,7 +37,9 @@ def get_db():
 
 
 # sign up users
-
+@app.get("/healthz", response_model=schemas.Healthz)
+def healthz():
+    return {"status": "ok"}
 
 @app.post("/users", response_model=UserBase)
 def sign_up_user(user: UserCreate, db: Session = Depends(get_db)):
@@ -185,9 +187,15 @@ def review_sitter(sitterReview: schemas.SitterReviewCreate,  user: UserBase = De
     return reviews.review_sitter(db, sitterReview=sitterReview, user_id=user.id)
 
 
+@app.get("/getReviews")
+def browse_reviews(user: UserBase = Depends(
+        get_current_user), db: Session = Depends(get_db)
+):
+    return reviews.browse_reviews(db, user_id=user.id)
+
+
 # @app.post("/reviewParent")
 # def cancel_booking(bookingId: int, user: UserBase = Depends(
 #         get_current_user), db: Session = Depends(get_db)
 # ):
 #     return bookings.cancel_booking(db, user_id=user.id, bookingId=bookingId)
-
